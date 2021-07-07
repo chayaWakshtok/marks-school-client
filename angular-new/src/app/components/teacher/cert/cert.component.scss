@@ -1,0 +1,21 @@
+th,
+h5,
+td {
+    text-align: center !important;
+}
+:host ::ng-deep .p-dropdown {
+    width: 20rem;
+}
+.new-cat {
+    text-align: right;
+    border: 1px solid #b56ce2;
+    border-radius: 14px;
+    padding: 20px;
+}
+.table1 {
+    margin-top: 50px;
+}
+
+.rotate {
+    transform: rotate(-90deg);
+}

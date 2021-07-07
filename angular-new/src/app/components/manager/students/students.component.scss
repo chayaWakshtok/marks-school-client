@@ -1,0 +1,7 @@
+:host {
+    ::ng-deep span.p-button-icon.p-button-icon-left.pi.pi-chevron-right,
+    span.p-button-icon.pi.pi-chevron-right,
+    .pi-chevron-right {
+        transform: rotate(180deg) !important;
+    }
+}

@@ -1,0 +1,92 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+    </p-toolbar>
+    <p-table #dt [value]="marksRange" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['minMark','endingYear','maxMark','endMark']" [rowHover]="true" dataKey="_id"
+        currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות" [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול טווחי ציונים לתעודה</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="minMark">ציון מינמלי <p-sortIcon field="minMark"></p-sortIcon>
+                </th>
+                <th pSortableColumn="maxMark">ציון מקסימלי <p-sortIcon field="maxMark"></p-sortIcon>
+                </th>
+                <th pSortableColumn="endMark">ציון סופי <p-sortIcon field="endMark"></p-sortIcon>
+                </th>
+                <th pSortableColumn="endingYear">עד שנה <p-sortIcon field="endingYear"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-trend>
+            <tr>
+                <td>{{trend.minMark}}</td>
+                <td>{{trend.maxMark}}</td>
+                <td>{{trend.endMark}}</td>
+                <td>{{trend.endingYear}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(trend)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(trend)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{marksRange ? marksRange.length : 0 }} טווחי ציונים לתעודה.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="markDialog" [style]="{width: '450px'}" header="פרטי טווח ציון לתעודה" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="name">ציון מינמלי</label>
+            <input type="number" pInputText id="name" [(ngModel)]="markRange.minMark" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !markRange.minMark">ציון מינמלי שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">ציון מקסימלי</label>
+            <input type="number" pInputText id="name" [(ngModel)]="markRange.maxMark" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !markRange.maxMark">ציון מקסימלי שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">ציון סופי</label>
+            <input type="text" pInputText id="name" [(ngModel)]="markRange.endMark" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !markRange.endMark">ציון סופי שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="year">שנת סיום</label>
+            <input type="number" pInputText id="name" [(ngModel)]="markRange.endingYear" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !markRange.endingYear">שנת סיום שדה חובה.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTrend()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

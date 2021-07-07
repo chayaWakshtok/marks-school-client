@@ -1,0 +1,20 @@
+<app-header [navbarBrandRouterLink]="['/']" [fixed]="true"
+    [navbarBrandFull]="{src: 'assets/logo.jpg', width: 89, height: 25, alt: 'School Marks'}">
+    <p style="position: absolute;left: 113px;top: 16px;">{{user.name}}</p>
+    <a style="position: absolute;left: 35px;" href="javascript:void(0)" (click)="logOut()">יציאה</a>
+</app-header>
+<div class="app-body">
+    <app-sidebar style="text-align: right;" #appSidebar [fixed]="true" [display]="'lg'" [minimized]="sidebarMinimized"
+        (minimizedChange)="toggleMinimize($event)">
+        <app-sidebar-nav [navItems]="navItems" [perfectScrollbar] [disabled]="appSidebar.minimized"></app-sidebar-nav>
+        <app-sidebar-minimizer></app-sidebar-minimizer>
+    </app-sidebar>
+    <!-- Main content -->
+    <main class="main" style="margin-left: 0px;margin-right: 200px;">
+        <cui-breadcrumb>
+        </cui-breadcrumb>
+        <div class="container-fluid">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,153 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="right">
+            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="יבוא"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="יצוא" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template> -->
+    </p-toolbar>
+    <p-table #dt [value]="students" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['tz','firstName','lastName','phone','address']" [rowHover]="true" dataKey="_id"
+        currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול תלמידות</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="tz">תעודת זהות <p-sortIcon field="tz"></p-sortIcon>
+                </th>
+                <th pSortableColumn="firstName">שם פרטי<p-sortIcon field="firstName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="lastName">שם משפחה<p-sortIcon field="lastName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="bornDate">תאריך לידה<p-sortIcon field="bornDate"></p-sortIcon>
+                </th>
+                <th pSortableColumn="address">כתובת<p-sortIcon field="address"></p-sortIcon>
+                </th>
+                <th pSortableColumn="phone">טלפון<p-sortIcon field="phone"></p-sortIcon>
+                </th>
+                <th pSortableColumn="classSchool.className">כיתה<p-sortIcon field="classSchool.className"></p-sortIcon>
+                </th>
+                <th pSortableColumn="trend.name">מגמה <p-sortIcon field="trend.name"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+
+        </ng-template>
+
+        <!-- <ng-template pTemplate="body" let-student let-rowIndex="rowIndex" let-expanded="expanded">
+            <tr *ngIf="rowGroupMetadata[student.classSchool.className].index === rowIndex">
+                <td colspan="9">
+                    <button type="button" pButton pRipple [pRowToggler]="student"
+                        class="p-button-text p-button-rounded p-button-plain p-mr-2"
+                        [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    <span class="p-text-bold p-ml-2">{{student.classSchool.className}}</span>
+                </td>
+            </tr>
+        </ng-template> -->
+        <ng-template pTemplate="body" let-student let-rowIndex="rowIndex">
+            <tr>
+                <td>{{student.tz}}</td>
+                <td>{{student.firstName}}</td>
+                <td>{{student.lastName}}</td>
+                <td>{{student.bornDate |date :'dd/mm/yyyy'}}</td>
+                <td>{{student.address}}</td>
+                <td>{{student.phone}}</td>
+                <td>{{student.classSchool.className}}</td>
+                <td>{{student.trend?.name}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(student)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(student)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="body" let-sub>
+            <tr>
+                <td>{{sub.subjectName}}</td>
+                <td>{{sub.numOfProjects}}</td>
+                <td>{{sub.trend?.name}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(sub)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(sub)"></button>
+                </td>
+            </tr>
+        </ng-template> -->
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{students ? students.length : 0 }} תלמידות.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="studentDialog" [style]="{width: '450px'}" header="פרטי תלמידה" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content" #mydiv>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">תעודת זהות</label>
+            <input type="text" pInputText id="name" [(ngModel)]="student.tz" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !student.tz">שם שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם פרטי</label>
+            <input type="text" pInputText id="name" [(ngModel)]="student.firstName" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם משפחה</label>
+            <input type="text" pInputText id="name" [(ngModel)]="student.lastName" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">כתובת</label>
+            <input type="text" pInputText id="name" [(ngModel)]="student.address" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">טלפון</label>
+            <input type="tel" pInputText id="name" [(ngModel)]="student.phone" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">תאריך לידה</label>
+            <!-- <input type="text" pInputText id="name" [(ngModel)]="student.bornDate" autofocus /> -->
+            <p-calendar [(ngModel)]="student.bornDate" [monthNavigator]="true" yearRange="1900:2020"
+                [yearNavigator]="true"></p-calendar>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">מגמה</label>
+            <!-- <input type="text" pInputText id="name" [(ngModel)]="subject.trendRef" autofocus /> -->
+            <p-dropdown styleClass="prime-text-override" appendTo="body" [autoDisplayFirst]="false" [options]="trends"
+                [(ngModel)]="student.trend" optionLabel="name">
+            </p-dropdown>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">כיתה</label>
+            <p-dropdown styleClass="prime-text-override" appendTo="body" [autoDisplayFirst]="false" [options]="classes"
+                [(ngModel)]="student.classSchool" optionLabel="className">
+            </p-dropdown>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveSub()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

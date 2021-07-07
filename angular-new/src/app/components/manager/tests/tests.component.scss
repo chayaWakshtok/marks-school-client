@@ -1,0 +1,21 @@
+label {
+    display: block !important;
+}
+
+:host {
+    ::ng-deep .p-dropdown {
+        width: 90% !important;
+    }
+    ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+        text-align: center !important;
+    }
+    ::ng-deep .p-datatable .p-datatable-thead > tr > td {
+        text-align: center !important;
+    }
+}
+
+th,
+h5,
+td {
+    text-align: center !important;
+}

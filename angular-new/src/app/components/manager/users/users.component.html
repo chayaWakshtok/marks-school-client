@@ -1,0 +1,134 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+    </p-toolbar>
+    <p-table #dt [value]="users" [rows]="10" [paginator]="true" [globalFilterFields]="['name','tzId','phone','email']"
+        [rowHover]="true" dataKey="_id" currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול משתמשים</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">שם <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">מייל <p-sortIcon field="email"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">פלאפון <p-sortIcon field="phone"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">תעודת זהות <p-sortIcon field="tzId"></p-sortIcon>
+                </th>
+                <th pSortableColumn="name">תפקיד <p-sortIcon field="role"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.phone}}</td>
+                <td>{{user.tzId}}</td>
+                <td>{{user.role}}</td>
+                <td>
+                    <button *ngIf="user.role=='מורה'" pButton pRipple icon="pi pi-user-plus"
+                        class="p-button-rounded p-button-secondary p-ml-3" (click)="openTeacherDialog(user)"></button>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editUser(user)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteUser(user)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{users ? users.length : 0 }} משתמשים.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="userDialog" [style]="{width: '450px'}" header="פרטי משתמש" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם</label>
+            <input type="text" pInputText id="name" [(ngModel)]="user.name" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !user.name">שם שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="email">מייל</label>
+            <input type="text" pInputText id="email" [(ngModel)]="user.email" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !user.email">מייל שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="phone">פלאפון</label>
+            <input type="text" pInputText id="phone" [(ngModel)]="user.phone" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !user.phone">פלאפון שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="tz">תעודת זהות</label>
+            <input type="text" pInputText id="tz" [(ngModel)]="user.tzId" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !user.tzId">תעודת זהות שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="role">תפקיד</label>
+            <p-dropdown styleClass="prime-text-override" id="role" appendTo="body" optionLabel="value"
+                optionValue="name" [autoDisplayFirst]="false" [options]="roles" [(ngModel)]="user.role">
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !user.role">תפקיד שדה חובה.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTrend()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="teacherDialog" [style]="{width: '450px'}" header="שיוך מורה למקצוע וכיתה" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="class">כיתה</label>
+            <p-dropdown styleClass="prime-text-override" id="class" appendTo="body" optionLabel="className"
+                optionValue="_id" [autoDisplayFirst]="false" [options]="classes"
+                [(ngModel)]="teacherClassSubject.class">
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !user.role">תפקיד שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="sub">מקצוע</label>
+            <p-dropdown styleClass="prime-text-override" id="sub" appendTo="body" optionLabel="subjectName"
+                optionValue="_id" [autoDisplayFirst]="false" [options]="subjects"
+                [(ngModel)]="teacherClassSubject.subject">
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !user.role">תפקיד שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="tz">שנת לימוד</label>
+            <input type="text" pInputText id="tz" [(ngModel)]="teacherClassSubject.studyYear" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !user.tzId"> שנת לימוד שדה חובה.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTeacher()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

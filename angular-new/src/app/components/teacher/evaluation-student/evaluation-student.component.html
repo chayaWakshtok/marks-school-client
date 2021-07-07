@@ -1,0 +1,78 @@
+<div class="mt-5 ml-3">
+    <div class="row">
+        <span class="mr-5 col-4" style="text-align: center;">
+            <label for="dropdown">כיתה</label>
+            <p-dropdown class="col-6" appendTo="body" (onChange)="chooseClass()" [autoDisplayFirst]="false"
+                [options]="classes" [(ngModel)]="selectClass" optionLabel="className" optionValue="_id">
+            </p-dropdown>
+        </span>
+    </div>
+</div>
+
+
+<div class="card mt-5" *ngIf="this.show==1">
+    <h5 class="m-3">הערכות לתעודה {{header}}</h5>
+    <p-toolbar styleClass="p-mb-0">
+        <!-- <ng-template pTemplate="left">
+            <button pButton pRipple label="הוספת קטגוריה" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="newCategory()"></button>
+        </ng-template> -->
+
+    </p-toolbar>
+    <p-table #dt [value]="studentsMarks" dataKey="id" *ngIf="this.selectClass">
+        <!-- <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template> -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th>תלמידה</th>
+                <th *ngFor="let c of evaluations" colspan="2">{{c.name}}</th>
+                <!-- <th>פעולות</th> -->
+            </tr>
+            <tr>
+                <th></th>
+                <ng-container *ngFor="let c of evaluations">
+                    <th>מספר הערות</th>
+                    <th> הערכה</th>
+                </ng-container>
+                <!-- <th></th> -->
+            </tr>
+
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{product.studentName}}</td>
+                <ng-container *ngFor="let p of product.evaluations;let index=index">
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number" (change)="updateMark(index,p,product)"
+                                    [(ngModel)]="product.evaluations[index].numComment">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{product.evaluations[index].numComment}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        {{p.levelName}}
+                    </td>
+                </ng-container>
+                <!-- <td>
+                    <button pButton pRipple icon="pi pi-plus-circle" class="p-button-rounded p-button-info"
+                        (click)="addComment(product)" pTooltip="הוספת הערכה" tooltipPosition="bottom"></button></td> -->
+            </tr>
+
+        </ng-template>
+    </p-table>
+</div>
+<div *ngIf="this.show==1">
+    <button pButton type="button" (click)="saveMark()" label="שמירה" class="btn btn-primary"></button>
+</div>
+<div *ngIf="this.show==2">
+    <p>את לא מחנכת בשום כיתה - אין נתונים להצגה</p>
+</div>

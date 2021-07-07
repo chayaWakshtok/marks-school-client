@@ -1,0 +1,37 @@
+form {
+    text-align: justify;
+}
+.invalid-feedback {
+    display: block !important;
+}
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    padding-right: calc(1.5em + -0.25rem) !important;
+    padding-left: 18px !important;
+}
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-position: left 8px center;
+}
+button.btn.btn-primary.px-4 {
+    padding-left: 1.5rem !important;
+}
+button.btn.bg-light-primary.px-4 {
+    padding-left: 1.5rem !important;
+}
+.card-gray {
+    background-color: #f5f5f5;
+}
+.border-cus {
+    border-top-right-radius: 0rem !important;
+    border-top-left-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+    border-bottom-right-radius: 0rem !important;
+}
+.border-cus1{
+    border-top-right-radius: 0.25rem !important;
+    border-top-left-radius: 0rem !important;
+    border-bottom-left-radius: 0rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}

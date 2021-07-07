@@ -1,0 +1,94 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import styles
+@import "~@coreui/coreui/scss/coreui";
+
+// If you want to add something do it here
+@import "custom";
+
+app-register {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.app-body {
+    margin-top: 55px !important;
+}
+.app {
+    background-image: linear-gradient(
+            43deg,
+            hsla(0, 0%, 41.2%, 0.02),
+            hsla(0, 0%, 41.2%, 0.02) 62%,
+            hsla(0, 0%, 89%, 0.02) 0,
+            hsla(0, 0%, 89%, 0.02) 69%,
+            rgba(24, 24, 24, 0.02) 0,
+            rgba(24, 24, 24, 0.02) 80%,
+            rgba(13, 13, 13, 0.02) 0,
+            rgba(13, 13, 13, 0.02) 82%,
+            rgba(13, 13, 13, 0.02) 0,
+            rgba(13, 13, 13, 0.02)
+        ),
+        linear-gradient(
+            31deg,
+            hsla(0, 0%, 60.8%, 0.02),
+            hsla(0, 0%, 60.8%, 0.02) 29%,
+            hsla(0, 0%, 64.3%, 0.02) 0,
+            hsla(0, 0%, 64.3%, 0.02) 41%,
+            hsla(0, 0%, 78.4%, 0.02) 0,
+            hsla(0, 0%, 78.4%, 0.02) 74%,
+            hsla(0, 0%, 89.8%, 0.02) 0,
+            hsla(0, 0%, 89.8%, 0.02) 79%,
+            rgba(15, 15, 15, 0.02) 0,
+            rgba(15, 15, 15, 0.02)
+        ),
+        linear-gradient(
+            319deg,
+            rgba(39, 39, 39, 0.02),
+            rgba(39, 39, 39, 0.02) 17%,
+            rgba(49, 49, 49, 0.02) 0,
+            rgba(49, 49, 49, 0.02) 25%,
+            rgba(59, 59, 59, 0.02) 0,
+            rgba(59, 59, 59, 0.02) 32%,
+            hsla(0, 0%, 76.1%, 0.02) 0,
+            hsla(0, 0%, 76.1%, 0.02) 46%,
+            hsla(0, 0%, 86.3%, 0.02) 0,
+            hsla(0, 0%, 86.3%, 0.02)
+        ),
+        linear-gradient(
+            113deg,
+            hsla(0, 0%, 73.7%, 0.02),
+            hsla(0, 0%, 73.7%, 0.02) 15%,
+            hsla(0, 0%, 87.5%, 0.02) 0,
+            hsla(0, 0%, 87.5%, 0.02) 46%,
+            rgba(21, 21, 21, 0.02) 0,
+            rgba(21, 21, 21, 0.02) 88%,
+            rgba(93, 93, 93, 0.02) 0,
+            rgba(93, 93, 93, 0.02) 94%,
+            hsla(0, 0%, 51%, 0.02) 0,
+            hsla(0, 0%, 51%, 0.02)
+        ),
+        linear-gradient(
+            29deg,
+            hsla(0, 0%, 52.5%, 0.02),
+            hsla(0, 0%, 52.5%, 0.02) 27%,
+            hsla(0, 0%, 71%, 0.02) 0,
+            hsla(0, 0%, 71%, 0.02) 41%,
+            rgba(81, 81, 81, 0.02) 0,
+            rgba(81, 81, 81, 0.02) 46%,
+            hsla(0, 0%, 99.2%, 0.02) 0,
+            hsla(0, 0%, 99.2%, 0.02) 58%,
+            rgba(74, 74, 74, 0.02) 0,
+            rgba(74, 74, 74, 0.02)
+        ),
+        linear-gradient(90deg, #e5e5e5, #e4e4e4);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+::ng-deep span.navbar-toggler-icon {
+    display: none !important;
+}
+::ng-deep .breadcrumb-item {
+    padding-right: 0px !important;
+}

@@ -1,0 +1,72 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="right">
+            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="יבוא"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="יצוא" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template> -->
+    </p-toolbar>
+    <p-table #dt [value]="trends" [rows]="10" [paginator]="true" [globalFilterFields]="['name']" [rowHover]="true"
+        dataKey="_id" currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול מגמות</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header" >
+            <tr>
+                <th pSortableColumn="name">שם <p-sortIcon field="name"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-trend >
+            <tr>
+                <td>{{trend.name}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(trend)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(trend)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{trends ? trends.length : 0 }} מגמות.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="trendDialog" [style]="{width: '450px'}" header="פרטי מגמה" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם</label>
+            <input type="text" pInputText id="name" [(ngModel)]="trend.name" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !trend.name">שם שדה חובה.</small>
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTrend()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

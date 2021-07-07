@@ -1,0 +1,18 @@
+.p-toolbar {
+    margin-bottom: 0px !important;
+}
+::ng-deep .p-button .p-button-icon-left {
+    margin-left: 0.5rem !important;
+    margin-right: 0px;
+}
+::ng-deep {
+    th.p-sortable-column {
+        text-align: justify !important;
+    }
+    td {
+        text-align: justify !important;
+    }
+    .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
+        margin-right: 1rem;
+    }
+}

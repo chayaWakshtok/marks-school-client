@@ -1,0 +1,107 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+    </p-toolbar>
+    <p-table #dt [value]="evaluationLevels" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['numCommentEnd','numCommentStart','remark','year','evaluation.name']" [rowHover]="true" dataKey="_id"
+        currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות" [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול הערכות להתנהגות לתעודה</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+        <!-- numCommentStart: number;
+        numCommentEnd: number;
+        remark: string;
+        year: string;
+        evaluation: any; -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="evaluation.name"> הערכה <p-sortIcon field="evaluation.name"></p-sortIcon>
+                </th>
+                <th pSortableColumn="numCommentStart">ממספר הערות <p-sortIcon field="numCommentStart"></p-sortIcon>
+                </th>
+                <th pSortableColumn="numCommentEnd">עד הערות <p-sortIcon field="numCommentEnd"></p-sortIcon>
+                </th>
+                <th pSortableColumn="remark">ציון <p-sortIcon field="remark"></p-sortIcon>
+                </th>
+                <th pSortableColumn="year"> שנה <p-sortIcon field="year"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-evaluationL>
+            <tr>
+                <td>{{evaluationL.evaluation.name}}</td>
+                <td>{{evaluationL.numCommentStart}}</td>
+                <td>{{evaluationL.numCommentEnd}}</td>
+                <td>{{evaluationL.remark}}</td>
+                <td>{{evaluationL.year}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(evaluationL)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(evaluationL)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{evaluationLevels ? evaluationLevels.length : 0 }} הערכות.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="evaluationDialog" [style]="{width: '450px'}" header=" פרטי הערכה להתנהגות לתעודה" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="name"> הערכה</label>
+            <p-dropdown styleClass="prime-text-override" appendTo="body" [autoDisplayFirst]="false" [options]="evaluations"
+                [(ngModel)]="evaluationLevel.evaluation" optionLabel="name">
+            </p-dropdown>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="numCommentStart">ממספר הערות</label>
+            <input type="number" pInputText id="numCommentStart" [(ngModel)]="evaluationLevel.numCommentStart" required
+                autofocus />
+            <small class="p-invalid" *ngIf="submitted && !evaluationLevel.numCommentStart">ממספר הערות שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="numCommentEnd">עד הערות</label>
+            <input type="number" pInputText id="numCommentEnd" [(ngModel)]="evaluationLevel.numCommentEnd" required
+                autofocus />
+            <!-- <small class="p-invalid" *ngIf="submitted && !evaluationLevel.numCommentStart">ממספר הערות שדה חובה.</small> -->
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="remark"> ציון</label>
+            <input type="text" pInputText id="remark" [(ngModel)]="evaluationLevel.remark" required autofocus />
+            <!-- <small class="p-invalid" *ngIf="submitted && !evaluationLevel.numCommentStart">ממספר הערות שדה חובה.</small> -->
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="year"> שנה</label>
+            <input type="number" pInputText id="year" [(ngModel)]="evaluationLevel.year" required autofocus />
+            <!-- <small class="p-invalid" *ngIf="submitted && !evaluationLevel.numCommentStart">ממספר הערות שדה חובה.</small> -->
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTrend()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

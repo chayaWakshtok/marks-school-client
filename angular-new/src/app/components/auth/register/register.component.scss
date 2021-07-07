@@ -1,0 +1,15 @@
+form {
+    text-align: justify;
+}
+.invalid-feedback{
+    display: block !important;
+}
+.was-validated .form-control:invalid, .form-control.is-invalid {
+    padding-right: calc(1.5em + -0.25rem) !important;
+    padding-left: 18px !important;
+}
+.was-validated .form-control:invalid, .form-control.is-invalid {
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-position: left 8px center;
+}
+

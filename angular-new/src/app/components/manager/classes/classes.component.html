@@ -1,0 +1,95 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="right">
+            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="יבוא"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="יצוא" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template> -->
+    </p-toolbar>
+    <p-table #dt [value]="classesSchool" [rows]="10" [paginator]="true" [globalFilterFields]="['className','endingYear']"
+        [rowHover]="true" dataKey="_id" currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול כיתות</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="className">שם <p-sortIcon field="className"></p-sortIcon>
+                </th>
+                <th pSortableColumn="endingYear">שנת סיום <p-sortIcon field="endingYear"></p-sortIcon>
+                </th>
+                <th pSortableColumn="teacherRef.name">מחנכת  <p-sortIcon field="teacherRef.name"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-trend>
+            <tr>
+                <td>{{trend.className}}</td>
+                <td>{{trend.endingYear}}</td>
+                <td>{{trend.teacherRef?.name}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(trend)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(trend)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{classesSchool ? classesSchool.length : 0 }} כיתות.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="classDialog" [style]="{width: '450px'}" header="פרטי כיתה" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם</label>
+            <input type="number" pInputText id="name" [(ngModel)]="classSchool.className" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !classSchool.className">שם שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="year">שנת סיום</label>
+            <input type="text" pInputText id="name" [(ngModel)]="classSchool.endingYear" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !classSchool.endingYear">שנת סיום שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="year">מחנכת</label>
+            <p-autoComplete [dropdown]="true" appendTo="body" dir="rtl" [(ngModel)]="classSchool.teacher"
+                [suggestions]="teachersResult" (completeMethod)="searchTea($event)" field="name">
+                <ng-template let-employee pTemplate="item">
+                    {{employee.name}}
+                </ng-template>
+                <ng-template let-employee pTemplate="selectedItem">
+                    {{employee.name}}
+                </ng-template>
+            </p-autoComplete>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveTrend()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

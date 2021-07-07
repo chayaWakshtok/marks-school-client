@@ -1,0 +1,13 @@
+:host {
+    ::ng-deep span.p-button-icon.p-button-icon-left.pi.pi-chevron-right,
+    span.p-button-icon.pi.pi-chevron-right,
+    .pi-chevron-right {
+        transform: rotate(180deg) !important;
+    }
+    ::ng-deep  td {
+        text-align: right !important;
+        border: 1px solid #e9ecef;
+        border-width: 0 0 1px 0;
+        padding: 1rem 1rem;
+    }
+}

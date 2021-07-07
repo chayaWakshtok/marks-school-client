@@ -1,0 +1,113 @@
+<div class="mt-5 ml-3">
+    <div class="row">
+        <span class="mr-5 col-4" style="text-align: center;">
+            <label for="dropdown">כיתה</label>
+            <p-dropdown class="col-6" appendTo="body" (onChange)="chooseClass()" [autoDisplayFirst]="false"
+                [options]="classes" [(ngModel)]="selectClass" optionLabel="className" optionValue="_id">
+            </p-dropdown>
+        </span>
+    </div>
+</div>
+
+<div class="card mt-5" *ngIf="this.show==1">
+    <h5 class="m-3"> ציוני תעודות {{header}}</h5>
+    <p-toolbar styleClass="p-mb-0">
+        <!-- <ng-template pTemplate="left">
+            <button pButton pRipple label="הוספת קטגוריה" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="newCategory()"></button>
+        </ng-template> -->
+
+    </p-toolbar>
+    <p-table #dt [value]="certsHalf" dataKey="id" *ngIf="this.selectClass">
+        <!-- <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template> -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th>תלמידה</th>
+                <th *ngFor="let c of subjects">{{c.subjectName}}</th>
+                <th>פעולות</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{product.studentName}}</td>
+                <ng-container *ngFor="let p of product.marks;let index=index">
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="product.marks[index].certMark"
+                                    (change)="updateMark(p)">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{product.marks[index].certMark?product.marks[index].certMark:"ציון חסר"}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                </ng-container>
+                <td>
+                    <button pButton pRipple icon="pi pi-book" class="p-button-rounded" pTooltip="יצירת תעודה"
+                        (click)="showDialog(product)" tooltipPosition="bottom"></button></td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+</div>
+<div *ngIf="this.show==1">
+    <button pButton type="button" (click)="saveChanges()" label="שמירה" class="btn btn-primary"></button>
+</div>
+<div *ngIf="this.show==2">
+    <p>את לא מחנכת בשום כיתה - אין נתונים להצגה</p>
+</div>
+
+<p-dialog header="Title" [(visible)]="display" [style]="{width: '750px'}" header="תעודה" [modal]="true"
+    styleClass="p-fluid">
+    <div class="card mt-5" *ngIf="this.show==1" id="contentToConvert">
+        <h5 class="m-3">{{chooseCertStudent.studentName}} תעודה </h5>
+
+
+        <!-- <table class="table1">
+            <tr>
+                <td class="rotate" rowspan="2">
+                    מקצועות קודש
+                </td>
+                <td>
+                    תורה עיון
+                </td>
+                <td>
+                    10
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    נביא
+                </td>
+                <td>
+                    8
+                </td>
+            </tr>
+        </table> -->
+
+        <p-table [value]="chooseCertStudent.marks">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>מקצוע</th>
+                    <th>ציון</th>
+                    <th>הערכה</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+                <tr>
+                    <td>{{product?.subject?.subjectName}}</td>
+                    <td>{{product.certMark}}</td>
+                    <td>{{product.commentsString}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <button type="button" (click)="createPDF()" class="btn btn-pill btn-primary"><i class="fa fa-lightbulb-o"></i>&nbsp;הדפסה</button>
+</p-dialog>

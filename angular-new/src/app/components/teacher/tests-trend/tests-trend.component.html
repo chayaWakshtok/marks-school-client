@@ -1,0 +1,122 @@
+<div class="mt-5 ml-3">
+    <div class="row">
+
+        <span class="mr-5 col-3" style="text-align: center;">
+            <label for="dropdown">מקצוע</label>
+            <p-dropdown class="col-6" (onChange)="chooseSubject()" inputId="dropdown1" [autoDisplayFirst]="false"
+                appendTo="body" [options]="subjects" [(ngModel)]="selectSubject" optionLabel="subjectName"
+                optionValue="_id">
+            </p-dropdown>
+        </span>
+        <span class="mr-5 col-3" style="text-align: center;">
+            <label for="dropdown">פרויקט</label>
+            <p-dropdown class="col-6" appendTo="body"  [autoDisplayFirst]="false"
+                [options]="projects" [(ngModel)]="selectProject" optionLabel="name" optionValue="_id">
+            </p-dropdown>
+        </span>
+        <span class="mr-5 col-3" style="text-align: center;">
+            <label for="dropdown">כיתה</label>
+            <p-dropdown class="col-6" appendTo="body" (onChange)="chooseClass()" [autoDisplayFirst]="false"
+                [options]="teacherClasses" [(ngModel)]="selectClass" optionLabel="className" optionValue="_id">
+            </p-dropdown>
+        </span>
+
+    </div>
+</div>
+
+<div class="card mt-5">
+    <h5 class="m-3">ציונים  {{header}}</h5>
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="הוספת קטגוריה" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="newCategory()"></button>
+        </ng-template>
+
+    </p-toolbar>
+    <p-table #dt [value]="marks" dataKey="id">
+        <!-- <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template> -->
+        <ng-template pTemplate="header">
+            <tr>
+                <th>תלמידה</th>
+                <th *ngFor="let c of categories" colspan="2">{{c.name}} -{{c.precent}}%</th>
+                <th>ציון הגשה</th>
+            </tr>
+            <tr>
+                <th></th>
+                <ng-container *ngFor="let c of categories">
+                    <th>ציון</th>
+                    <th>ציון סופי</th>
+                </ng-container>
+                <th></th>
+            </tr>
+
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{product.studentName}}</td>
+                <ng-container *ngFor="let p of product.marks;let index=index">
+                    <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number" (change)="updateMarkByCategory(index,p,product)"
+                                    [(ngModel)]="product.marks[index].mark">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{product.marks[index].mark}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        {{p.endMark}}
+                    </td>
+                </ng-container>
+                <td>
+                    {{product.finishMark}}
+                </td>
+            </tr>
+
+        </ng-template>
+    </p-table>
+</div>
+<div>
+    <button pButton type="button" (click)="saveMark()" label="שמירה" class="btn btn-primary"></button>
+</div>
+
+
+<p-dialog [(visible)]="categoryDialog" [style]="{width: '450px'}" header="הוספת קטגוריה" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <ul>
+            <div class="p-field" style="text-align: right;" *ngFor="let item of categoryCopy;let index=index">
+                <ng-container *ngIf="index==categoryCopy.length-1">
+                    <li class="p-field new-cat" style="text-align: right;">
+                        <span><b>שם קטגוריה -</b></span>
+                        <input type="text" pInputText id="name" [(ngModel)]="item.name" required autofocus />
+                        <span><b>אחוזים -</b></span>
+                        <input type="number" pInputText id="precent" [(ngModel)]="item.precent" required autofocus />
+                        <!-- <small class="p-invalid" *ngIf="submitted && !markRange.minMark">ציון מינמלי שדה חובה.</small> -->
+                    </li>
+                </ng-container>
+                <ng-container *ngIf="index!=categoryCopy.length-1">
+                    <li>{{item.name}} - <span><b>אחוזים:</b> </span><input type="number" pInputText id="precent"
+                            [(ngModel)]="item.precent" required autofocus /></li>
+                </ng-container>
+            </div>
+        </ul>
+    </ng-template>
+    <p style="color:red">{{errorMessage}}</p>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text"
+            (click)="hideCategoryDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text"
+            (click)="saveNewCategory()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

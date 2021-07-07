@@ -1,0 +1,177 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-0">
+        <ng-template pTemplate="left">
+            <button pButton pRipple label="חדש" icon="pi pi-plus" class="btn btn-primary p-mr-2 "
+                (click)="openNew()"></button>
+        </ng-template>
+
+        <!-- <ng-template pTemplate="right">
+            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="יבוא"
+                class="p-mr-2 p-d-inline-block"></p-fileUpload>
+            <button pButton pRipple label="יצוא" icon="pi pi-upload" class="p-button-help"></button>
+        </ng-template> -->
+    </p-toolbar>
+    <p-table #dt [value]="subjects" [rows]="10" [paginator]="true" [globalFilterFields]="['subjectName','numOfProjectsEnter',
+    'numOfProjectsOutside','numOfProjectsEnd','type','trendRef','semel']"
+        [rowHover]="true" dataKey="_id" currentPageReportTemplate="הצגה {first} - {last} מ {totalRecords} רשימות"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">ניהול מקצועות</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" class="form-control"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="חיפוש..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="subjectName">שם <p-sortIcon field="subjectName"></p-sortIcon>
+                </th>
+                <th pSortableColumn="numOfProjectsEnter"> מספר פרויקטים -פנימי <p-sortIcon field="numOfProjectsEnter"></p-sortIcon>
+                </th>
+                <th pSortableColumn="numOfProjectsOutside"> מספר פרויקטים -בית ספרי <p-sortIcon field="numOfProjectsOutside"></p-sortIcon>
+                </th>
+                <th pSortableColumn="numOfProjectsEnd"> מספר פרויקטים -בגרות <p-sortIcon field="numOfProjectsEnd"></p-sortIcon>
+                </th>
+                <th pSortableColumn="type">חול\קודש <p-sortIcon field="type"></p-sortIcon>
+                </th>
+                <th pSortableColumn="trendRef">מגמה <p-sortIcon field="trendRef"></p-sortIcon>
+                </th>
+                <th pSortableColumn="semel">סמל שאלון <p-sortIcon field="semel"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+
+        </ng-template>
+
+        <ng-template pTemplate="body" let-sub>
+            <tr>
+                <td>{{sub.subjectName}}</td>
+                <td>{{sub.numOfProjectsEnter}}</td>
+                <td>{{sub.numOfProjectsOutside}}</td>
+                <td>{{sub.numOfProjectsEnd}}</td>
+                <td>{{sub.type==1?'חול':'קודש'}}</td>
+                <td>{{sub.trend?.name}}</td>
+                <td>{{sub.semel}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-calendar-times" pTooltip="פרויקטים"
+                        class="p-button-rounded p-button-info p-ml-3" (click)="openProjects(sub)"></button>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-ml-3"
+                        (click)="editTrend(sub)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteTrend(sub)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                יש {{subjects ? subjects.length : 0 }} מקצועות.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="subjectDialog" [style]="{width: '450px'}" header="פרטי מקצוע" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content" #mydiv>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">שם</label>
+            <input type="text" pInputText id="name" [(ngModel)]="subject.subjectName" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !subject.subjectName">שם שדה חובה.</small>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name"> מספר פרויקטים -פנימי</label>
+            <input type="text" pInputText id="name" [(ngModel)]="subject.numOfProjectsEnter" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">מספר פרויקטים -חיצוני</label>
+            <input type="text" pInputText id="name" [(ngModel)]="subject.numOfProjectsOutside" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">מספר פרויקטים -בגרות</label>
+            <input type="text" pInputText id="name" [(ngModel)]="subject.numOfProjectsEnd" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">סוג מקצוע</label>
+            <!-- <input type="text" pInputText id="name" [(ngModel)]="subject.trendRef" autofocus /> -->
+            <p-dropdown styleClass="prime-text-override" appendTo="body" [autoDisplayFirst]="false" [options]="types"
+                [(ngModel)]="subject.type" optionLabel="value" optionValue="key">
+            </p-dropdown>
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="se"> סמל שאלון</label>
+            <input type="text" pInputText id="se" [(ngModel)]="subject.semel" autofocus />
+        </div>
+        <div class="p-field" style="text-align: right;">
+            <label for="name">מגמה</label>
+            <!-- <input type="text" pInputText id="name" [(ngModel)]="subject.trendRef" autofocus /> -->
+            <p-dropdown styleClass="prime-text-override" appendTo="body" [autoDisplayFirst]="false" [options]="trends"
+                [(ngModel)]="subject.trend" optionLabel="name">
+            </p-dropdown>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveSub()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="projectDialog" [style]="{width: '750px'}" header="פרטי פרויקטים" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content" #mydiv3>
+        <h3>פרויקטים להבחנות פנימית</h3>
+        <ng-container *ngFor="let item of projectEnter;let index=index">
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> שם</label>
+                <input type="text" pInputText [id]="'name'+index" [(ngModel)]="item.name" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !item.name">שם שדה חובה.</small>
+            </div>
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> אחוזים</label>
+                <input type="text" pInputText [id]="'pre'+index" [(ngModel)]="item.precent" autofocus />
+            </div>
+        </ng-container>
+        <br>
+        <br>
+        <h3>פרויקטים להבחנות חיצונית</h3>
+        <ng-container *ngFor="let item of projectOutside;let index=index">
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> שם</label>
+                <input type="text" pInputText [id]="'nameOut'+index" [(ngModel)]="item.name" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !item.name">שם שדה חובה.</small>
+            </div>
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> אחוזים</label>
+                <input type="text" pInputText [id]="'preOut'+index" [(ngModel)]="item.precent" autofocus />
+            </div>
+        </ng-container>
+        <br>
+        <br>
+        <h3>פרויקטים לבגרות</h3>
+        <ng-container *ngFor="let item of projectEnd;let index=index">
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> שם</label>
+                <input type="text" pInputText [id]="'nameEnd'+index" [(ngModel)]="item.name" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !item.name">שם שדה חובה.</small>
+            </div>
+            <div class="p-field" style="text-align: right;">
+                <label for="name"><span>{{index+1}}.</span> אחוזים</label>
+                <input type="text" pInputText [id]="'preEnd'+index" [(ngModel)]="item.precent" autofocus />
+            </div>
+        </ng-container>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ביטול" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="שמירה" icon="pi pi-check" class="p-button-text" (click)="saveProject()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
